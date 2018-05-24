@@ -47,26 +47,16 @@ plotQualityProfile(fn[1:12])
 filt_path <- file.path(path, "filtered") # Place filtered files in filtered subdirectory
 filt <- file.path(filt_path, paste0(sample.names, "_filt.fastq"))
 
-#Filter the forward and reverse reads:
+# Filter the forward and reverse reads:
 out <- filterAndTrim(fn, filt, truncLen=10, trimLeft=15, 
                       maxN=0, maxEE=2, truncQ=2, rm.phix=TRUE,
                       compress=TRUE, multithread=TRUE, verbose = TRUE)
 head(out)
 
-```
-
-                   reads.in reads.out
-SRR6127720_1.fastq    41452     39987
-SRR6127721_1.fastq    41499     40603
-SRR6127722_1.fastq    41356     39990
-SRR6127723_1.fastq    24999     24485
-SRR6127724_1.fastq    18609     17954
-SRR6127725_1.fastq    34088     32807
-
-```
 # Learn the Error Rates 
 err <- learnErrors(filt, multithread=FALSE)
 plotErrors(err, nominalQ=TRUE)
 dada2:::checkConvergence(err)
 ```
+
 
