@@ -71,103 +71,54 @@ Random reads are then created using the BBmap program with a coverage of 6 and p
 ```{bash}
 
 randomreads.sh -Xmx4G ref=GCF_000012825.1_ASM1282v1_genomic.fna out=Bacteroides_vulgatus_ATCC8482.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_vulgatus_ATCC8482.log
-
 randomreads.sh -Xmx4G ref=GCF_000162015.1_ASM16201v1_genomic.fna out=Faecalibacterium_prausnitzii_A2-165.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Faecalibacterium_prausnitzii_A2-165.log
-
 randomreads.sh -Xmx4G ref=GCF_000166035.1_ASM16603v1_genomic.fna out=Faecalibacterium_prausnitzii_KLE1255.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Faecalibacterium_prausnitzii_KLE1255.log
-
 randomreads.sh -Xmx4G ref=GCF_000146185.1_ASM14618v1_genomic.fna out=Eubacterium_eligens.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Eubacterium_eligens.log
-
 randomreads.sh -Xmx4G ref=GCA_000209855.1_ASM20985v1_genomic.fna out=Faecalibacterium_prausnitzii_SL3_3.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Faecalibacterium_prausnitzii_SL3_3.log
-
 randomreads.sh -Xmx4G ref=GCF_000011065.1_ASM1106v1_genomic.fna out=Bacteroides_thetaiotaomicron_VPI_548.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_thetaiotaomicron_VPI_548.log
-
 randomreads.sh -Xmx4G ref=GCF_000160055.1_ASM16005v1_genomic.fna out=Dialister_invisus_DSM_15470.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Dialister_invisus_DSM_15470.log
-
 randomreads.sh -Xmx4G ref=GCA_000209955.1_ASM20995v1_genomic.fna out=Eubacterium_rectale_M104_1.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Eubacterium_rectale_M104_1.log
-
 randomreads.sh -Xmx4G ref=GCA_000209835.1_ASM20983v1_genomic.fna out=Ruminococcus_sp_SR1_5.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Ruminococcus_sp_SR1_5.log
-
 randomreads.sh -Xmx4G ref=GCF_000155875.1_ASM15587v1_genomic.fna out=Coprococcus_comes_ATCC_27758.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Coprococcus_comes_ATCC_27758.log
-
 randomreads.sh -Xmx4G ref=GCF_000012845.1_ASM1284v1_genomic.fna out=Parabacteroides_distasonis_ATCC_8503.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Parabacteroides_distasonis_ATCC_8503.log
-
 randomreads.sh -Xmx4G ref=GCF_000020225.1_ASM2022v1_genomic.fna out=Akkermansia_muciniphila_ATCC_BAA_835.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Akkermansia_muciniphila_ATCC_BAA_835.log
-
 randomreads.sh -Xmx4G ref=GCF_000210835.1_ASM21083v1_genomic.fna out=Bacteroides_fragilis_638R.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_fragilis_638R.log
-
 randomreads.sh -Xmx4G ref=GCF_000156015.1_ASM15601v1_genomic.fna out=Butyrivibrio_crossotus_DSM_2876.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Butyrivibrio_crossotus_DSM_2876.log
-
 randomreads.sh -Xmx4G ref=GCF_000225345.1_ASM22534v1_genomic.fna out=Roseburia_hominis_A2_183.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Roseburia_hominis_A2_183.log
-
 randomreads.sh -Xmx4G ref=GCF_000153885.1_ASM15388v1_genomic.fna out=Eubacterium_ventriosum_ATCC_27560.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Eubacterium_ventriosum_ATCC_27560.log
-
 randomreads.sh -Xmx4G ref=GCF_001025215.1_ASM102521v1_genomic.fna out=Bifidobacterium_pseudocatenulatum_DSM_20438.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bifidobacterium_pseudocatenulatum_DSM_20438.log
-
 randomreads.sh -Xmx4G ref=GCF_000156195.1_ASM15619v1_genomic.fna out=Bacteroides_finegoldii_DSM_17565.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_finegoldii_DSM_17565.log
-
 randomreads.sh -Xmx4G ref=GCF_000230275.1_ASM23027v1_genomic.fna out=Acidaminococcus_intestini_RyC-MR95.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Acidaminococcus_intestini_RyC-MR95.log
-
 randomreads.sh -Xmx4G ref=GCF_000188175.1_ASM18817v1_genomic.fna out=Phascolarctobacterium_succinatutens_YIT_12067.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Phascolarctobacterium_succinatutens_YIT_12067.log
-
 randomreads.sh -Xmx4G ref=GCF_000190535.1_ASM19053v1_genomic.fna out=Odoribacter_splanchnicus_DSM_20712.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Odoribacter_splanchnicus_DSM_20712.log
-
 randomreads.sh -Xmx4G ref=GCF_000185705.2_Bilo_wads_3_1_6_V2_genomic.fna out=Bilophila_wadsworthia_3_1_6.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bilophila_wadsworthia_3_1_6.log
-
 randomreads.sh -Xmx4G ref=GCF_000091005.1_ASM9100v1_genomic.fna out=Escherichia_coli_O26H11_str_11368.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Escherichia_coli_O26H11_str_11368.log
-
 randomreads.sh -Xmx4G ref=GCF_000157915.1_ASM15791v1_genomic.fna out=Bacteroides_coprophilus_DSM_18228.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_coprophilus_DSM_18228.log
-
 randomreads.sh -Xmx4G ref=GCF_000156655.1_ASM15665v1_genomic.fna out=Holdemanella_biformis_DSM_3989.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Holdemanella_biformis_DSM_3989.log
-
 randomreads.sh -Xmx4G ref=GCF_000154365.1_ASM15436v1_genomic.fna out=Clostridium_bolteae_ATCC_BAA613.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Clostridium_bolteae_ATCC_BAA613.log
-
 randomreads.sh -Xmx4G ref=GCF_000253335.1_ASM25333v1_genomic.fna out=Streptococcus_salivarius_CCHSS3.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Streptococcus_salivarius_CCHSS3.log
-
 randomreads.sh -Xmx4G ref=GCF_000332875.2_ASM33287v2_genomic.fna out=Anaerostipes_hadrus_DSM_3319.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Anaerostipes_hadrus_DSM_3319.log
-
 randomreads.sh -Xmx4G ref=GCF_000010425.1_ASM1042v1_genomic.fna out=Bifidobacterium_adolescentis_ATCC_15703.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bifidobacterium_adolescentis_ATCC_15703.log
-
 randomreads.sh -Xmx4G ref=GCF_000173975.1_ASM17397v1_genomic.fna out=Eubacterium_hallii_DSM_3353.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Eubacterium_hallii_DSM_3353.log
-
 randomreads.sh -Xmx4G ref=GCF_000157015.1_ASM15701v1_genomic.fna out=Bacteroides_fragilis_3_1_12.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_fragilis_3_1_12.log
-
 randomreads.sh -Xmx4G ref=GCF_000144975.1_ASM14497v1_genomic.fna out=Burkholderiales_bacterium_1_1_47.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Burkholderiales_bacterium_1_1_47.log
-
 randomreads.sh -Xmx4G ref=GCF_000155205.1_ASM15520v1_genomic.fna out=Ruminococcus_lactaris_ATCC_29176.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Ruminococcus_lactaris_ATCC_29176.log
-
 randomreads.sh -Xmx4G ref=GCF_000155815.1_ASM15581v1_genomic.fna out=Bacteroides_eggerthii_DSM_20697.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_eggerthii_DSM_20697.log
-
 randomreads.sh -Xmx4G ref=GCF_000156675.1_ASM15667v1_genomic.fna out=Blautia_hansenii_DSM_20583.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Blautia_hansenii_DSM_20583.log
-
 randomreads.sh -Xmx4G ref=GCF_000162215.1_ASM16221v1_genomic.fna out=Bacteroides_sp_D20.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_sp_D20.log
-
 randomreads.sh -Xmx4G ref=GCF_000209445.1_Lach_bact_9_1_43BFAA_V1_genomic.fna out=Lachnospiraceae_bacterium_9_1_43BFAA.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Lachnospiraceae_bacterium_9_1_43BFAA.log
-
 randomreads.sh -Xmx4G ref=GCF_000165905.1_ASM16590v1_genomic.fna out=Bifidobacterium_bifidum_PRL2010.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bifidobacterium_bifidum_PRL2010.log
-
 randomreads.sh -Xmx4G ref=GCF_000210575.1_ASM21057v1_genomic.fna out=Alistipes_shahii_WAL_8301.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Alistipes_shahii_WAL_8301.log
-
 randomreads.sh -Xmx4G ref=GCA_000210655.1_ASM21065v1_genomic.fna out=Roseburia_intestinalis_XB6B4.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Roseburia_intestinalis_XB6B4.log
-
 randomreads.sh -Xmx4G ref=GCF_000186505.1_Sutt_wads_3_1_45B_V1_genomic.fna out=Sutterella_wadsworthensis_3_1_45B.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Sutterella_wadsworthensis_3_1_45B.log
-
 randomreads.sh -Xmx4G ref=GCF_000195615.1_ASM19561v1_genomic.fna out=Bacteroides_clarus_YIT_12056.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacteroides_clarus_YIT_12056.log
-
 randomreads.sh -Xmx4G ref=GCF_000183485.2_ASM18348v1_genomic.fna out=Alistipes_sp_HGB5.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Alistipes_sp_HGB5.log
-
 randomreads.sh -Xmx4G ref=GCF_000007845.1_ASM784v1_genomic.fna out=Bacillus_anthracis.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacillus_anthracis.log
-
 randomreads.sh -Xmx4G ref=GCF_000007825.1_ASM782v1_genomic.fna out=Bacillus_cereus_ATCC_4579.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacillus_cereus_ATCC_4579.log
-
 randomreads.sh -Xmx4G ref=GCF_000008505.1_ASM850v1_genomic.fna out=Bacillus_thuringiensis.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacillus_thuringiensis.log
-
 randomreads.sh -Xmx4G ref=GCF_000832605.1_ASM83260v1_genomic.fna out=Bacillus_mycoides.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacillus_mycoides.log
-
 randomreads.sh -Xmx4G ref=GCF_000161455.1_ASM16145v1_genomic.fna out=Bacillus_pseudomycoides.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Bacillus_pseudomycoides.log
-
 randomreads.sh -Xmx4G ref=GCF_000253395.1_ASM25339v1_genomic.fna out=Streptococcus_thermophilus_JIM_8232.fq.gz coverage=6 minlength=100 maxlength=100 length=100 maxq=40 midq=20 minq=6 snprate=0.02 insrate=0.02 subrate=0.02 nrate=0.02 maxns=10 metagenome &> Streptococcus_thermophilus_JIM_8232.log
-
 
 # Concatenate the fastq files to create the simulated shotgun metagenomics data
 cat *.fq.gz > simulated_gut_metagenome.fq.gz
