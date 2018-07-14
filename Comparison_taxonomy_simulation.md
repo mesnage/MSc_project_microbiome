@@ -1,4 +1,7 @@
-This markdown contains the code used to compare the output of different types of gut microbiome analysis on some simulated data
+This markdown contains the code used to compare the output of different types of gut microbiome analysis on some simulated data. 
+
+I have compared the accuracy of taxonomic assignments between QIIME (open source software package the most cited for OTU analysis) and DADA2 (the most popular method for ESV analysis) on a simulated PCR amplification of the 16S rRNA gene V3-V4 regions from 50 bacteria strains using the sequencing simulator Grinder
+
    
 --------------------------------------------------------------------------
 
