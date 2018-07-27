@@ -19,9 +19,9 @@ Reads in the individual fastq files are denoised using DADA2. Exact sequence var
 
 
 
-# ---------------------------------------------------------------------------------------------------
-# HEAD OF THE SCRIPT TO RUN ON THE HPC CLUSTER 
-# ---------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
+## HEAD OF THE SCRIPT TO RUN ON THE HPC CLUSTER 
+## ---------------------------------------------------------------------------------------------------
 
 ```{bash}
 #$ -S /bin/sh
@@ -44,9 +44,9 @@ source activate qiime1
 ```
 
 
-# ---------------------------------------------------------------------------------------------------
-# DEMULTIPLEX THE FASTQ FILES BASED ON THE READ INDEX # 
-# ---------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
+## DEMULTIPLEX THE FASTQ FILES BASED ON THE READ INDEX # 
+## ---------------------------------------------------------------------------------------------------
 
 
 All FASTQ files were demultiplexed using QIIME scripts (split_libraries_fastq.py and split_libraries_fastq.py). The split_libraries_fastq.py parameters used are recommended by the Earth Microbiome Project (http://www.earthmicrobiome.org/protocols-and-standards/initial-qiime-processing/)
@@ -101,9 +101,9 @@ Check the number of sequences written in the log files. It should be the same fo
 If some reads have been dropped, the R1 and R2 fastq files may not be in the same order. This can be fixed using the repair.sh script of BBTools (https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/).
 
 
-# ---------------------------------------------------------------------------------------------------
-# SPLIT THE RESULT OF split_libraries_fastq.py INTO PER-SAMPLE FASTQ FILES # 
-# ---------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
+## SPLIT THE RESULT OF split_libraries_fastq.py INTO PER-SAMPLE FASTQ FILES # 
+## ---------------------------------------------------------------------------------------------------
 
 The output by split_sequence_file_on_sample_ids.py is named sample_name.fastq, and don't have R1 or R2 in the name. The following scripts add the correct names to the sample of a given sequencing run.
 
@@ -135,9 +135,9 @@ A threshold of 10,000 seems appropriate and can be used.
 
 
 
-# ---------------------------------------------------------------------------------------------------
-# DENOISE THE READS AND RESOLVE EXACT SEQUENCE VARIANTS FOR EACH FASTQ USING DADA2
-# ---------------------------------------------------------------------------------------------------
+## ---------------------------------------------------------------------------------------------------
+## DENOISE THE READS AND RESOLVE EXACT SEQUENCE VARIANTS FOR EACH FASTQ USING DADA2
+## ---------------------------------------------------------------------------------------------------
 
 The following R script can be ran in order to loop across the different directories and process the reads using DADA2.
 
