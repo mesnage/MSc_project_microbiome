@@ -2,12 +2,6 @@ This markdown contains the code used to compare the output of different types of
 
 I have compared the accuracy of taxonomic assignments between QIIME (open source software package the most cited for OTU analysis) and DADA2 (the most popular method for ESV analysis) on a simulated PCR amplification of the 16S rRNA gene V3-V4 regions from 50 bacteria strains using the sequencing simulator Grinder.
 
-
-Author:     Robin Mesnage
-Contact:    robin.mesnage@kcl.ac.uk
---------------------------------------------------------------------------
-
-
 ### Download the fasta nucleic acid files from the NCBI servers
 
 These have been chosen based on the results of the study 'Subspecies in the global human gut microbiome' by Costea et al., in Mol Syst Biol (2017, 13(12):960). A difficult taxonomy assignment scenario was also added. Four species of the Bacillus cereus group were added in order to test if the pathogenic agent Bacillus anthracis can be detected using 16S rRNA sequencing and if it can be differentiated from closely related members of this taxonomic group. A large number of parameters can have an influence on the quality of taxonomic assignment and a comprehensive benchmarking study is beyond the scope of this preliminary analysis. 
@@ -73,39 +67,42 @@ wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/900/106/845/GCF_900106845.1_PRJE
 ### Use Grinder to create 16S data reads
 
 Random 16S rRNA sequencing data is then created using Grinder (Angly et al., Nucleic Acids Research, Volume 40, Issue 12, 1) with the following parameters. We don't use a length bias (-length_bias 0) because the length of the reference genomes should not affect the relative abundance of amplicons. However, we took into account the fact that some genomes can have several 16S rRNA copies so that amplicon libraries are copy biased.
+
 The primers were chosen to cover the V3-V4 regions (forward was CCTACGGGNGGCWGCAG, reverse was GACTACHVGGGTATCTAATCC) according to Thijs et al., Front Microbiol. 2017; 8: 494). We used the default n-mer distribution: 89% of bimeras, 11% trimeras and 0.3% of quadrimera, corresponding to average published values (Quince, et al., 2011). The fraction of chimera was 10% (recommended value). The number of reads generated was 100,000. We selected a read distribution around 250+-15 bp as in (Computational Methods for Next Generation Sequencing Data Analysis, Wiley Series in Bioinformatics). 
 
 ```{bash}
-# Create the FASTA file containing the forward and reverse primers
-echo -e '>forward\nCCTACGGGNGGCWGCAG\n>reverse\nGACTACHVGGGTATCTAATCC' >Primers_forward.fa
+# Create the FASTA file containing the forward and reverse primers and store it as 'Primers.fa'
+echo -e '>forward\nCCTACGGGNGGCWGCAG\n>reverse\nGACTACHVGGGTATCTAATCC' >Primers.fa
 
-# Unzip the genome fastq files, and concatenate them into a single reference file
+# Unzip the genome fastq files downloaded from the previous section, and concatenate them into a single reference file
 gunzip *.fna.gz
 cat *genomic.fna > 16S.fna
 
 # Create the 16S rRNA read FASTQ file by simulating a PCR with GRINDER
-Grinder -reference_file 16S.fna -forward_reverse Primers_forward.fa -length_bias 0 -unidirectional 1 -rd 550 normal 30 -mo FR -tr 100000 -ql 30 30 -fq 1 -diversity 50
+Grinder -reference_file 16S.fna -forward_reverse Primers.fa -length_bias 0 -unidirectional 1 -rd 550 normal 30 -mo FR -tr 100000 -ql 30 30 -fq 1 -diversity 50
 
 ```
 
 
 ### Taxonomic profiling with DADA2
 
-Amplicon Sequence Variants from the FASTQ file created with Grinder are extracted using DADA2 in R
+Amplicon Sequence Variants from the FASTQ file created with Grinder are extracted using DADA2 in R. 
+This section contains the code necessary to dereplicate the sequences, infer the sequence variants, and assign the taxonomy.
+The taxonomy is assigned using the SILVA database (available here https://benjjneb.github.io/dada2/training.html)
 
 ```{r Dada2}
 
 library(dada2)
 
 # Dereplicate the fastq file
-derepFs <- derepFastq('grinder-reads.fastq', verbose=TRUE)
+derep <- derepFastq('grinder-reads.fastq')
 
 # Infer the sequence variants in each sample using the DADA2 algorithm 
-dadaFs <- dada(derepFs, err=inflateErr(tperr1, 3), multithread=TRUE)
+dada <- dada(derep, err=inflateErr(tperr1, 3))
 
 # Assign taxonomy using the SILVA database 
-taxa <- assignTaxonomy(dadaFs, "/Users/robin/ncbi/silva_nr_v132_train_set.fa", multithread=TRUE)
-genus.species <- assignSpecies(dadaFs, "/Users/robin/ncbi/silva_species_assignment_v132.fa", allowMultiple = TRUE)
+taxa <- assignTaxonomy(dada, "~/silva_nr_v132_train_set.fa")
+genus.species <- assignSpecies(dada, "~/silva_species_assignment_v132.fa", allowMultiple = TRUE)
 
 # Find the number of reads assigned to each ASV
 require(dplyr)
@@ -176,6 +173,8 @@ write.csv(qiime_abundance, '/Users/robin/test/uclust_openref/abundance_qiime_gri
 
 ### Calculate the sensitivity and the specificity for QIIME and DADA2
 
+The sensitivity estimated as the percentage of taxa detected (true positive rate) was 81% and 59% for DADA2 and QIIME at the species level, respectively. The specificity defined as the percentage of expected taxa detected out of all taxa detected (true negative rate) was 90% for both DADA2 and QIIME at the genus level.
+
 ```{R QIIME}
 # Calculate the sensitivity at the Genus level for QIIME
 nrow(unique(inner_join(qiime_abundance[c(8)], true_compo[c(1)], by ='Genus')))/length(unique(true_compo$Genus))*100
@@ -188,3 +187,8 @@ nrow(unique(inner_join(qiime_abundance[c(8)], true_compo[c(1)], by ='Genus')))/l
 nrow(unique(inner_join(dada2_abundance[c(1)], true_compo[c(1)], by ='Genus')))/length(unique(dada2_abundance$Genus))*100
 
 ```
+
+
+Author:     Robin Mesnage
+Contact:    robin.mesnage@kcl.ac.uk
+--------------------------------------------------------------------------
