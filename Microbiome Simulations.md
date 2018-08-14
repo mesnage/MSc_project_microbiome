@@ -1,10 +1,11 @@
-This markdown contains the code used to compare the output of different types of gut microbiome analysis on some simulated data.
+This markdown contains the code used to compare the output of QIIME and DADA2 on some simulated data.
 
 I have compared the accuracy of taxonomic assignments between QIIME (open source software package the most cited for OTU analysis) and DADA2 (the most popular method for ESV analysis) on a simulated PCR amplification of the 16S rRNA gene V3-V4 regions from 50 bacteria strains using the sequencing simulator Grinder.
 
-### Download the fasta nucleic acid files from the NCBI servers
+These have been chosen based on the results of the study 'Subspecies in the global human gut microbiome' by Costea et al., in Mol Syst Biol (2017, 13(12):960). A difficult taxonomy assignment scenario was also added. Four species of the Bacillus cereus group were added in order to test if the pathogenic agent Bacillus anthracis can be detected using 16S rRNA sequencing and if it can be differentiated from closely related members of this taxonomic group. 
 
-These have been chosen based on the results of the study 'Subspecies in the global human gut microbiome' by Costea et al., in Mol Syst Biol (2017, 13(12):960). A difficult taxonomy assignment scenario was also added. Four species of the Bacillus cereus group were added in order to test if the pathogenic agent Bacillus anthracis can be detected using 16S rRNA sequencing and if it can be differentiated from closely related members of this taxonomic group. A large number of parameters can have an influence on the quality of taxonomic assignment and a comprehensive benchmarking study is beyond the scope of this preliminary analysis. 
+
+### Download the fasta nucleic acid files from the NCBI servers
 
 ```{bash}
 wget ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/012/825/GCF_000012825.1_ASM1282v1/GCF_000012825.1_ASM1282v1_genomic.fna.gz  # Bacteroides vulgatus ATCC 8482 NCBI:txid435590
@@ -119,6 +120,7 @@ write.table(abundance, 'abundance_data2_grinder.txt', sep = '\t', row.names = FA
 ```
 
 
+
 ### Taxonomic binning and profiling with QIIME
 
 OTUs from the FASTQ file created with Grinder are extracted using QIIME1
@@ -170,23 +172,11 @@ write.csv(qiime_abundance, '/Users/robin/test/uclust_openref/abundance_qiime_gri
 
 ```
 
+The results of the simulation including the 50 species described above are available:
 
-### Calculate the sensitivity and the specificity for QIIME and DADA2
+https://github.com/mesnage/microbiome/blob/master/Simulation_50species_Grinder_QIIME.csv
 
-The sensitivity estimated as the percentage of taxa detected (true positive rate) was 81% and 59% for DADA2 and QIIME at the species level, respectively. The specificity defined as the percentage of expected taxa detected out of all taxa detected (true negative rate) was 90% for both DADA2 and QIIME at the genus level.
-
-```{R QIIME}
-# Calculate the sensitivity at the Genus level for QIIME
-nrow(unique(inner_join(qiime_abundance[c(8)], true_compo[c(1)], by ='Genus')))/length(unique(true_compo$Genus))*100
-# Calculate the sensitivity at the Genus level for DADA2
-nrow(unique(inner_join(dada2_abundance[c(1)], true_compo[c(1)], by ='Genus')))/length(unique(true_compo$Genus))*100
-
-# Calculate the specificity at the Genus level for QIIME
-nrow(unique(inner_join(qiime_abundance[c(8)], true_compo[c(1)], by ='Genus')))/length(unique(qiime_abundance$Genus))*100
-# Calculate the specificity at the Genus level for DADA2
-nrow(unique(inner_join(dada2_abundance[c(1)], true_compo[c(1)], by ='Genus')))/length(unique(dada2_abundance$Genus))*100
-
-```
+https://github.com/mesnage/microbiome/blob/master/Simulation_50species_Grinder_DADA2.csv
 
 
 Author:     Robin Mesnage
