@@ -8,16 +8,18 @@ Contact:    robin.mesnage@kcl.ac.uk
 
 --------------------------------------------------------------------------
 
-Prior to using this script, the quality of the fastq files should be examined, primers removed and adapters trimmed. The cleaning of the reads (trimming bad quality bases, removing PhiX) and the forward/reverse reads merging is not performed in the first steps of the analysis on the multiplexed files like in QIIME, but at a later stage using DADA2 in R following DADA2 recommended parameters.
+Prior to using this script, the quality of the fastq files should be examined, primers removed and adapters trimmed. The cleaning of the reads (trimming bad quality bases, removing PhiX) and the forward/reverse reads merging is not performed in the first steps of the analysis on the multiplexed files like in QIIME, but at a later stage using DADA2 functions in R.
 
-The fastq files are demultiplexed into individual fastq files using QIIME scripts (split_libraries_fastq.py and split_libraries_fastq.py). All the log files are stored and their content summarised using custom python scripts
-
+The fastq files are demultiplexed into individual fastq files using QIIME scripts (split_libraries_fastq.py and split_libraries_fastq.py). 
 Reads in the individual fastq files are denoised using DADA2. Exact sequence variants are resolved and the taxonomy assigned using SILVA v132 database.
 
 
-
-
 ### HEAD OF THE SCRIPT TO RUN ON THE HPC CLUSTER 
+I perform my data analysis on Rosalind High Performance Compute (HPC) cluster, part of BRC at Guy's and St Thomas' NHS Foundation Trust, using 4 threads with a maximum RAM of 64 GB. 
+However, this workflow can also be done on a laptop since DADA2 is processing samples independently which means that the memory required is not inflating with the number of samples like in some other pipelines (e.g. Mothur). For instance, it is possible to process 100 sample, each containing around 50,000 reads, overnight on a MacBook Pro 2016 with 16 Go of RAM by multithreading the analysis in DADA2 functions.
+
+I recommend to use a recent version of DADA2 (> 1.7) because taxonomic assignment at the species level has been improved in the more recent versions.
+
 
 ```{bash}
 #$ -S /bin/sh
@@ -44,9 +46,10 @@ source activate qiime1
 
 ### DEMULTIPLEX THE FASTQ FILES BASED ON THE READ INDEX # 
 
-All FASTQ files were demultiplexed using QIIME scripts (split_libraries_fastq.py and split_libraries_fastq.py). The split_libraries_fastq.py parameters used are recommended by the Earth Microbiome Project (http://www.earthmicrobiome.org/protocols-and-standards/initial-qiime-processing/)
+All FASTQ files were demultiplexed using QIIME scripts (split_libraries_fastq.py and split_libraries_fastq.py). 
+The split_libraries_fastq.py parameters used are recommended by the Earth Microbiome Project (http://www.earthmicrobiome.org/protocols-and-standards/initial-qiime-processing/)
 
-The following script is used as a loop across directories, each containing the different multiplexed files for a unique sequencing run
+The following script is used as a loop across directories, each containing the different multiplexed files for a unique sequencing run. This script can be modified to run into a single folder on a single MiSeq run.
 
 
 ```{bash}
@@ -92,10 +95,73 @@ done
 
 ```
 
-Check the number of sequences written in the log files. It should be the same for the forward (R1) and reverse (R2) reads.
+IMPORTANT: Check the number of sequences written in the log files. It should be the same for the forward (R1) and reverse (R2) reads.
 If some reads have been dropped, the R1 and R2 fastq files may not be in the same order. This can be fixed using the repair.sh script of BBTools (https://jgi.doe.gov/data-and-tools/bbtools/bb-tools-user-guide/).
 
+When running this pipeline on a large dataset, it can be interesting to group the content of all log files together in order to extract summary statistics.
+I have written a short Python script that can be run to perform summary statistics on a series of split_libraries_fastq logfiles. The log files produced by split_libraries_fastq.py should be concatenated as a single file.
+This can be done at the command line using 'cat split_library_log*.txt > Concat_Demux_Log.txt'
 
+```{Python}
+with open("/Users/robin/Logfiles/Split_library_log/Concat_Demux_Log.txt", 'r') as f:
+    alignments_log = f.read().splitlines()
+
+import re
+
+# Statistics on the total number of reads processed
+p = re.compile(r'Total number of input sequences: (.*)')
+
+total_inputs =[]
+
+for line in alignments_log:
+    match = p.search(line)
+    if match:
+        total_inputs.append(float(match.group(1)))
+
+print('Total number of input sequences:')
+print("     Total is", sum(total_inputs))
+print("     Average is", sum(total_inputs)/len(total_inputs))
+print("     Minimum is", min(total_inputs))
+print("     Maximum is", max(total_inputs))
+
+
+# Statistics on the number of reads written
+p = re.compile(r'Total number seqs written *(.*)')
+
+reads_written =[]
+
+for line in alignments_log:
+    match = p.search(line)
+    if match:
+        reads_written.append(float(match.group(1)))
+
+print('')
+print('Total number seqs written:')
+print("     Total is", sum(reads_written))
+print('     Average is', sum(reads_written)/len(reads_written))
+print("     minimum is", min(reads_written))
+print("     maximum is", max(reads_written))
+
+
+# Statistics on the number of reads per sample
+q = re.compile(r'	(.+?)$')
+
+reads_per_sample =[]
+for line in alignments_log:
+    match = q.search(line)
+    if match:
+        reads_per_sample.append(float(match.group(1)))
+
+discarded_samples = [a for a in reads_per_sample if (a <= 10000)]
+retained_samples = [a for a in reads_per_sample if (a >= 10000)]
+
+print('')
+print('There are', len(discarded_samples), 'fastq with less than 10000 reads')
+print('There are', len(retained_samples), 'fastq with more than 10000 reads')
+
+print('')
+print('The average number of reads per fastq is', sum(retained_samples)/len(retained_samples))
+```
 
 
 ### SPLIT THE RESULT OF split_libraries_fastq.py INTO PER-SAMPLE FASTQ FILES # 
@@ -125,8 +191,8 @@ source deactivate # QIIME is not used in the following steps
 
 The forward and reverse fastq files are grouped in similar folders (the content of SEQUENCING_RUN_R1 and SEQUENCING_RUN_R2 should be transferred in a folder SEQUENCING RUN. I do that manually since it allows me to inspect the output of the previous steps. 
 
-FASTQ files with a very low number of reads should be discarded as they might cause an error in DADA2.
-A threshold of 10,000 seems appropriate and can be used. 
+FASTQ files with a very low number of reads should be discarded as they might cause an error in DADA2. A threshold of 10,000 seems appropriate and this is what I used. 
+Although it can be possible to extract meaningful information with a lower number of reads per sample, the user should be careful seems large differences in the number of reads per sample could introduce some biases when read counts are normalised to a total sum unit.
 
 
 
@@ -147,10 +213,12 @@ R CMD BATCH ~/PATH/TO/DIRECTORY/Dada2_Script_Twins_Loop.R
 
 ```{R Dada2_Script_Twins_Loop}
 
+# THIS IS THE Dada2_Script_Twins_Loop.R FILE
 
 require(dada2)
-require(ggplot2)
+require(ggplot2) 
 
+# SET A LOOP ACROSS ALL DIRECTORIES (each directory contains FASTQ files of a unique sequencing run with the forward reads '_R1.fastq' and the reverse reads '_R2.fastq'.
 setwd("~/PATH/TO/DIRECTORY")
 directories <- list.dirs(path = ".", full.names = TRUE, recursive = TRUE)
 actual_directory <- getwd()
@@ -159,124 +227,119 @@ for(i in directories ){for(j in i){
   print(j)
 
 
-###########  PREPARE THE DATA   #######################
+# ENTER THE DIRECTORY TO PREPARE THE DATA 
 
 setwd(j)
 extension <- substring(j, 2)  
 
 path <- paste(actual_directory, extension, sep = "", collapse = NULL)
 
-list.files(path) 
+# Sort ensures forward/reverse reads are in same order with the given pattern
+forward_reads <- sort(list.files(path, pattern="_R1.fastq"))
+reverse_reads <- sort(list.files(path, pattern="_R2.fastq"))
+
+# Extract sample names (format SAMPLENAME_R1.fastq for the forward reads for example)
+sample.names <- sapply(strsplit(forward_reads, "_"), `[`, 1)
+
+# Specify the full path to the forward_reads and reverse_reads
+forward_reads <- file.path(path, forward_reads)
+reverse_reads <- file.path(path, reverse_reads)
 
 
-# Sort ensures forward/reverse reads are in same order
-fnFs <- sort(list.files(path, pattern="_R1.fastq"))
-fnRs <- sort(list.files(path, pattern="_R2.fastq"))
+# EXAMINE READ QUALITY PROFILES AND SAVE THE PLOTS AS A jpg FILE. 
+# This step is not necessary and is more a sanity control. The quality profile of the reads should be thoroughly inspected before starting this analysis using a tool like FASTQC
 
-# Extract sample names (format SAMPLENAME_R1.fastq)
-sample.names <- sapply(strsplit(fnFs, "_"), `[`, 1)
-
-# Specify the full path to the fnFs and fnRs
-fnFs <- file.path(path, fnFs)
-fnRs <- file.path(path, fnRs)
-
-
-###########  EXAMINE READ QUALITY PROFILES   #######################
-
-plotQualityProfile_F <- plotQualityProfile(fnFs[1:16])
+plotQualityProfile_F <- plotQualityProfile(forward_reads[1:16])
 ggsave('plotQualityProfile_F', plotQualityProfile_F, device="jpg")
 
-plotQualityProfile_R <- plotQualityProfile(fnRs[1:16])
+plotQualityProfile_R <- plotQualityProfile(reverse_reads[1:16])
 ggsave('plotQualityProfile_R', plotQualityProfile_R, device="jpg")
 
 
 
-###########  FILTER THE FORWARD AND REVERSE READS   #######################
+# FILTER THE FORWARD AND REVERSE READS
+# This is one of the most important step. The presence of bad quality bases will cause problem to lear the error rates. A too stringent trimming will make the reads to short to assign their taxonomy.
+# It should also be kept in mind that the reads are not merged yet, and that a minimum overlap of 15-20 bases between the forward and the reverse read is generally recommended to complete the merging step successfully.
 
 filt_path <- file.path(path, "filtered") # Place filtered files in filtered/ subdirectory
-filtFs <- file.path(filt_path, paste0(sample.names, "_F_filt.fastq"))
-filtRs <- file.path(filt_path, paste0(sample.names, "_R_filt.fastq"))
+filtered_forward_reads <- file.path(filt_path, paste0(sample.names, "_F_filt.fastq"))
+filtered_reverse_reads <- file.path(filt_path, paste0(sample.names, "_R_filt.fastq"))
 
 # Forward and reverse reads were trimmed by 5 and 10 bp at their 3’ end, respectively. We also trimmed 10 bases at the 5’ side of reads. 
 # This parameter depends on the quality of the FASTQ files
+# The details of these parameters can be found in the DADA2 pipeline tutorial https://benjjneb.github.io/dada2/tutorial.html
 
-out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, truncLen=c(245,240), trimLeft = 10,
+out <- filterAndTrim(forward_reads, filtered_forward_reads, reverse_reads, filtered_reverse_reads, truncLen=c(245,240), trimLeft = 10,
                      maxN=0, maxEE=c(2,2), truncQ=2, rm.phix=TRUE,
                      compress=TRUE, multithread=FALSE, verbose=TRUE, matchIDs=TRUE) 
 head(out)
 
 
 
-###########  Learn the Error Rates   #######################
+#  LEARN THE ERROR RATE
+# DADA2 models sequencing errors to resolve the correct DNA sequence of each amplicon (Callahan et al., 2016). 
+Errors are modelled using the FASTQ quality scores. In other words, when other methods consider single nucleotide differences between sequences (e.g. C ->T) as a mismatch, DADA2 uses an error model to denoise the data and resolve ‘Amplicon Sequence Variants’ (ASVs).
 
-errF <- learnErrors(filtFs, multithread=TRUE)
+# Learn the error rates for the forward (errF) and reverse (errR) reads
+errF <- learnErrors(filtered_forward_reads, multithread=TRUE)
+errR <- learnErrors(filtered_reverse_reads, multithread=TRUE)
+
+# Save the error rate plots
 plotErrors_F <- plotErrors(errF, nominalQ=TRUE)
 ggsave("plotErrors_F.jpg", plotErrors_F, device="jpg")
-dada2:::checkConvergence(errF)
-
-errR <- learnErrors(filtRs, multithread=TRUE)
 plotErrors_R <- plotErrors(errR, nominalQ=TRUE)
 ggsave("plotErrors_R.jpg", plotErrors_R, device="jpg")
+
+# The following option allows the user to check the error rate across the different iterations. 
+# This can be useful in case the error rate modelling algorithm does not converge properly in order to check that the error rate is decreasing with increasing base-calling quality, and also decreasing after several iterations.
+dada2:::checkConvergence(errF)
 dada2:::checkConvergence(errR)
 
 
+# DEREPLICATE THE FILTERED FASTQ FILES 
 
-
-########### Dereplicate the filtered fastq file  ###########
-
-derepFs <- derepFastq(filtFs, verbose=TRUE)
-derepRs <- derepFastq(filtRs, verbose=TRUE)
+derepFs <- derepFastq(filtered_forward_reads, verbose=TRUE)
+derepRs <- derepFastq(filtered_reverse_reads, verbose=TRUE)
 
 # Name the derep-class objects by the sample names
 names(derepFs) <- sample.names
 names(derepRs) <- sample.names
 
 
-########### Infer the sequence variants in each sample #####
+# INFER THE ASV FOR EACH SAMPLE
+# By default, DADA2 processes each sample separately. In this case, we pooled information across samples since it is shown that it can increase sensitivity to sequence variants that may be present at very low frequencies in multiple samples.
+# Pooling samples implies that memory requirements increase with the number of samples. This 'pool' option should be deactivates if the pipeline is run on a local machine.
 
-# By default, dada2 processes each sample separately. In this case, we pooled information across samples since it is shown that it can increase sensitivity to sequence variants that may be present at very low frequencies in multiple samples
+dadaFs <- dada(derepFs, err=errF, multithread=TRUE, pool=TRUE)
+dadaRs <- dada(derepRs, err=errR, multithread=TRUE, pool=TRUE)
 
-dadaFs <- dada(derepFs, err=errF, multithread=TRUE)
-dadaRs <- dada(derepRs, err=errR, multithread=TRUE)
-
-dadaFs[[1]]     # Inspecting the dada-class object returned by dada
-dadaRs[[1]]
+dadaFs[[1]]     # Inspecting the dada-class object returned by dada for the forward reads
+dadaRs[[1]].    # Inspecting the dada-class object returned by dada for the reverse reads
 
 
-########  Merge the denoised forward and reverse reads #####
-
+# MERGE THE DENOISED FORWARD AND REVERSE READS AND CONSTRUCT SEQUENCE TABLES
 mergers <- mergePairs(dadaFs, derepFs, dadaRs, derepRs, verbose=TRUE)
+
 # Inspect the merger data.frame from the first sample
 head(mergers[[1]])
-
-
-######## Construct sequence table #########################
 
 seqtab <- makeSequenceTable(mergers)
 dim(seqtab)
 table(nchar(getSequences(seqtab)))   # # Inspect distribution of sequence lengths
 
 
-########  Remove chimeric sequences  #######################
+# REMOVE CHIMERIC SEQUENCES
 
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 dim(seqtab.nochim)
 sum(seqtab.nochim)/sum(seqtab)
 
 
-########  Track reads through the pipeline###############
-
-getN <- function(x) sum(getUniques(x))
-track <- cbind(out, sapply(dadaFs, getN), sapply(mergers, getN), rowSums(seqtab), rowSums(seqtab.nochim))
-colnames(track) <- c("input", "filtered", "denoised", "merged", "tabled", "nonchim")
-rownames(track) <- sample.names
-head(track)
-
 rm(derepFs, derepRs)  # Remove the dereplicated files which are very large
 unlink("filtered", recursive=TRUE) # Remove the filtered file which are not used anymore
 
 
-# Assign the name of the sequencing run to the ASV table in order to use all ASV tables in the following analysis
+# Assign the name of the sequencing run to the ASV table
 imagename <- substring(j, 3)
 assign(paste(imagename, "seqtab.nochim", sep = '_'), seqtab.nochim) 
 
@@ -292,7 +355,7 @@ setwd("PATH/TO/DIRECTORY")
 save.image("~/PATH/TO/DIRECTORY/Dada2_Seqtables.R")
 ```
 
-At this stage, the 16S folder is supposed to contain subfolders with each sequencing run details including the FASTQ files, the logfiles, the plots generated during the processing by DADA2, and one R image containing a table 'seq_tab
+At this stage, the 16S folder is supposed to contain subfolders with each sequencing run details including the FASTQ files, the logfiles, the plots generated during the processing by DADA2, and one R image containing a table 'seq_tab'
 
 
 ```{R}
@@ -305,6 +368,14 @@ tt <- assignTaxonomy(final_seqtab, "~/PATH/TO/DIRECTORY/silva_nr_v132_train_set.
 # Add the species
 taxa <- addSpecies(tt, "~/PATH/TO/DIRECTORY/silva_species_assignment_v132.fa", allowMultiple=TRUE, tryRC=TRUE)
 
+#To make visualization easier, we can assign a unique ID to each of our sequence variants. I will create a new category in the taxonomy table called Seq that contains the SV sequence and also a category for the unique ID.
+taxa <- as.data.frame(taxa)
+taxa$Seq<-rownames(taxa)
+taxa$SV_ID<-paste0("SV_", seq(from=1, to=nrow(taxa), by=1))
+colnames(final_seqtab)<-taxa[colnames(final_seqtab),]$SV_ID #Our table of SVs currently has sequences for names, switch it to the unique ID you created above
+rownames(taxa)<-taxa$SV_ID
+
+
 # Write the taxa and sequence tables as .txt tables
 write.table(taxa, "taxa.txt", sep ='\t')
 write.table(final_seqtab, "final_seqtab.txt", sep ='\t')
@@ -312,6 +383,8 @@ write.table(final_seqtab, "final_seqtab.txt", sep ='\t')
 ```
 
 The analysis with DADA2 is now complete. 
+The count table 'final_seqtab' contains read counts for each ASV. 
+The taxa table contains ASV taxonomy up to the species level
 
 --------------------------------------------------------------------------
 
