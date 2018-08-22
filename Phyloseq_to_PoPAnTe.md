@@ -2,25 +2,24 @@ This markdown contains the code used to make a metagenome-wide association using
 
 PopPAnTe is a program to assess association of quantitative data in familial samples. The relation between a response variable and a predictor is measured in a linear-mixed model taking into account the family relationship, which is modelled as a random effect. 
 
-The following code is used to make the analysis in the context of an analysis on Twins with family structure and zygosity modelled as a random effect.
-
-Although this code was fit for our purposes, it can be modified and adapted to other types of metagenome-wide association studies.
+The following code is used to make the analysis in the context of an analysis on Twins with family structure and zygosity modelled as a random effect. Although this code was fit for our purposes, it can be modified and adapted to other types of metagenome-wide association studies.
 
 More details on the use of PopPAnTe can be found in Visconti et al BMC Genomics, 2017, 18:150.
 
 
 Author:     Robin Mesnage
-Contact:    robin.mesnage@kcl.ac.uk
+contact:    robin.mesnage@kcl.ac.uk
 --------------------------------------------------------------------------
 
 
-# Create the tables used by PopPAnTe from the Phyloseq object
+### Create the tables used by PopPAnTe from the Phyloseq object
 
-The phyloseq object contains 3 tables, the OTU/ASV count table, the taxonomy table, and the metadata table). 
+The phyloseq object contains the OTU/ASV count table, the taxonomy table, and the metadata table. 
 These table will be extracted using the following lines of code. A folder will be create in the home directory of the user and this folder will be populated with the different tables necessary to use PopPAnTe by extracting information from the Phyloseq object.
 
-The user needs to specify the covariates and the predictors names which should be included in the metadata table.
-This metadata table should also contain the individuals ID ('Individual_id'), the Family ID ('Family_id'), the Gender ('Gender'), the Zygosity (Zygosity), as well as the sample names ('Sample_name').
+The user needs to specify the covariates and the predictors names that will be used in the linear-mixed models. These should be included in the metadata table
+
+This metadata table should also contain the individuals ID ('Individual_id'), the Family ID ('Family_id'), the Gender ('Gender'), the Zygosity (Zygosity), as well as the sample names ('Sample_name'). They will be used to make the pedigree file used by PopPAnte to estimate family effects (more on PED files: https://gatkforums.broadinstitute.org/gatk/discussion/7696/pedigree-ped-files)
 
 
 
@@ -80,7 +79,7 @@ PED_filled$V5[PED_filled$V5 == 'F'] <- 2 ; PED_filled$V5[PED_filled$V5 == 'M'] <
 PED_filled$zygocity[PED_filled$zygocity == 'MZ'] <- 1 ; PED_filled$zygocity[PED_filled$zygocity == 'DZ'] <- 2
 write.table(PED_filled, '~/Poppante/mydata.ped',  sep = '\t', col.names = FALSE, row.names = FALSE, quote = FALSE)
 
-# Create the covariate file for the taxa
+# Create the covariate file
 covariate_columns <- vector()
 for (i in 1:length(covariate_names))
 {
@@ -111,9 +110,9 @@ write.table(map, '~/Poppante/map.txt', col.names = FALSE, row.names = FALSE, quo
 ```
 
 
-# Make the PopPAnTe analysis
+### Make the PopPAnTe analysis
 
-Make sure that the PopPAnTe executable is in the folder containing the tables
+Make sure that the PopPAnTe executable is in the folder containing the tables created using the previous code chunk.
 
 
 ```{bash}
