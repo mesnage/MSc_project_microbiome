@@ -7,11 +7,6 @@ The following code is used to make the analysis in the context of an analysis on
 More details on the use of PopPAnTe can be found in Visconti et al BMC Genomics, 2017, 18:150.
 
 
-Author:     Robin Mesnage
-contact:    robin.mesnage@kcl.ac.uk
---------------------------------------------------------------------------
-
-
 ### Create the tables used by PopPAnTe from the Phyloseq object
 
 The phyloseq object contains the OTU/ASV count table, the taxonomy table, and the metadata table. 
@@ -123,4 +118,8 @@ tar -xvzf poppante_20180320-v1_0_2.tar.gz
 java -jar poppante_20180320-v1_0_2.jar -mode association -ped mydata.ped -response response.txt -predictor predictors.txt -map map.txt -covariate covariate.tsv -output results -verbose true
 
 ```
+
+Author:     Robin Mesnage
+contact:    robin.mesnage@kcl.ac.uk
+--------------------------------------------------------------------------
 
